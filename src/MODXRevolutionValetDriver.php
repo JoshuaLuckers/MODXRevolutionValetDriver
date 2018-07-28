@@ -11,7 +11,7 @@
 
 class MODXRevolutionValetDriver extends BasicValetDriver
 {
-    
+
     /**
      * Determine if the driver serves the request.
      *
@@ -46,11 +46,68 @@ class MODXRevolutionValetDriver extends BasicValetDriver
         if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $requestParameter = ltrim($uri, '/');
             if ($requestParameter !== '') {
+                $requestParameterParts = explode('/', $requestParameter, 2);
+
+                // Check if the URL contains a possible cultureKey we have to set.
+                if (count($requestParameterParts) === 2) {
+                    $requestParameterCultureKeyPart = $requestParameterParts[0];
+                    if (in_array($requestParameterCultureKeyPart, $this->_getAvailableCultureKeys())) {
+                        $requestParameterQueryPart = $requestParameterParts[1];
+
+                        $_GET['cultureKey'] = $requestParameterCultureKeyPart;
+                        // If the requestParameter contains a cultureKey we don't need it in the query
+                        $requestParameter = $requestParameterQueryPart;
+                    }
+                }
+
                 $_GET['q'] = $requestParameter;
                 $_REQUEST += $_GET;
             }
         }
 
         return parent::frontControllerPath($sitePath, $siteName, $uri);
+    }
+
+    /**
+     * Get the available cultureKeys MODX supports by default.
+     *
+     * @return array
+     */
+    protected function _getAvailableCultureKeys()
+    {
+        $cultureKeys = [
+            'ar',
+            'be',
+            'bg',
+            'cs',
+            'da',
+            'de',
+            'el',
+            'en',
+            'es',
+            'et',
+            'fa',
+            'fi',
+            'fr',
+            'he',
+            'hi',
+            'hu',
+            'id',
+            'it',
+            'ja',
+            'nl',
+            'pl',
+            'pt-br',
+            'ro',
+            'ru',
+            'sv',
+            'th',
+            'tr',
+            'uk',
+            'yo',
+            'zh',
+        ];
+
+        return $cultureKeys;
     }
 }

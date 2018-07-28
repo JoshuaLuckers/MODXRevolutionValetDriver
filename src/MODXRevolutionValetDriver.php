@@ -34,6 +34,35 @@ class MODXRevolutionValetDriver extends BasicValetDriver
     }
 
     /**
+     * Determine if the incoming request is for a static file.
+     *
+     * @param  string $sitePath
+     * @param  string $siteName
+     * @param  string $uri
+     * @return string|false
+     */
+    public function isStaticFile($sitePath, $siteName, $uri)
+    {
+        $isStaticFile = parent::isStaticFile($sitePath, $siteName, $uri);
+
+        if ($isStaticFile === false) {
+            $uriParts = explode('/', ltrim($uri, '/'), 2);
+
+            // Check if the URI contains a possible cultureKey we have to set.
+            if (count($uriParts) === 2) {
+                $uriCultureKeyPart = $uriParts[0];
+                if (in_array($uriCultureKeyPart, $this->_getAvailableCultureKeys())) {
+                    $uriPart = '/' . $uriParts[1];
+
+                    return parent::isStaticFile($sitePath, $siteName, $uriPart);
+                }
+            }
+        }
+
+        return $isStaticFile;
+    }
+
+    /**
      * Get the fully resolved path to the application's front controller.
      *
      * @param  string $sitePath

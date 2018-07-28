@@ -5,3 +5,6 @@ A [Valet](https://github.com/laravel/valet) / [Valet+](https://github.com/weprov
 
 ## Using the driver
 To use this driver, clone or download this repo and copy the file `MODXRevolutionValetDriver.php` from the `src`directory to the `~/.valet/Drivers` directory.
+
+## Support, issues and updates
+For support, issues and updates visit the [GitHub repo of this driver](https://github.com/JoshuaLuckers/MODXRevolutionValetDriver).    

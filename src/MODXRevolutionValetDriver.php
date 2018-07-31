@@ -26,6 +26,10 @@ class MODXRevolutionValetDriver extends BasicValetDriver
             return true;
         }
 
+        if (!file_exists($sitePath . '/index.php')) {
+            return false;
+        }
+
         if (strpos(file_get_contents($sitePath . '/index.php'), 'MODX Revolution') !== false) {
             return true;
         }

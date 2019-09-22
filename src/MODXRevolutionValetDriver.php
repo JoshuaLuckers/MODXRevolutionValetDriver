@@ -76,7 +76,7 @@ class MODXRevolutionValetDriver extends BasicValetDriver
      */
     public function frontControllerPath($sitePath, $siteName, $uri)
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' || $_SERVER['REQUEST_METHOD'] === 'POST') {
             $requestParameter = ltrim($uri, '/');
             if ($requestParameter !== '') {
                 $requestParameterParts = explode('/', $requestParameter, 2);
@@ -87,14 +87,25 @@ class MODXRevolutionValetDriver extends BasicValetDriver
                     if (in_array($requestParameterCultureKeyPart, $this->_getAvailableCultureKeys())) {
                         $requestParameterQueryPart = $requestParameterParts[1];
 
-                        $_GET['cultureKey'] = $requestParameterCultureKeyPart;
+                        $cultureKey = $requestParameterCultureKeyPart;
                         // If the requestParameter contains a cultureKey we don't need it in the query
                         $requestParameter = $requestParameterQueryPart;
                     }
                 }
 
-                $_GET['q'] = $requestParameter;
-                $_REQUEST += $_GET;
+                if($_SERVER['REQUEST_METHOD'] === 'GET') {
+                    if(isset($cultureKey)) {
+                        $_GET['cultureKey'] = $cultureKey;
+                    }
+                    $_GET['q'] = $requestParameter;
+                    $_REQUEST += $_GET;
+                } else {
+                    if(isset($cultureKey)) {
+                        $_POST['cultureKey'] = $cultureKey;
+                    }
+                    $_POST['q'] = $requestParameter;
+                    $_REQUEST += $_POST;
+                }
             }
         }
 

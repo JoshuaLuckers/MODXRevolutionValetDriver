@@ -185,7 +185,13 @@ class MODXRevolutionValetDriver extends BasicValetDriver
         $indexFileContents = file_get_contents($sitePath . $path . 'index.php');
         if (strpos($indexFileContents, 'modX') !== false) {
             if (strpos($indexFileContents, 'modRestService') !== false) {
-                $this->requestParameter = '_rest';
+                $indexFileContents = preg_replace('/\s+/', '', $indexFileContents);
+                preg_match('/(?<!\/)\'requestParameter\'=>[\'"](.*)[\'"],?/U', $indexFileContents, $matches);
+                if (empty($matches)) {
+                    $this->requestParameter = '_rest';
+                } else {
+                    $this->requestParameter = array_pop($matches);
+                }
             }
             return true;
         }

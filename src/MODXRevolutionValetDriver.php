@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2018, Joshua Lückers (https://github.com/JoshuaLuckers)
+ * Copyright (c) 2018-present, Joshua Lückers (https://github.com/JoshuaLuckers)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE file

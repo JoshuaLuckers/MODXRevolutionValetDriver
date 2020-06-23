@@ -118,7 +118,7 @@ class MODXRevolutionValetDriver extends BasicValetDriver
         }
 
         if ($this->basePath !== '/') {
-            return parent::frontControllerPath($sitePath . rtrim($this->basePath, '/'), $siteName, $uri);
+            return parent::frontControllerPath($sitePath . $this->basePath, $siteName, preg_replace('/' .preg_quote($this->basePath, '/'). '/', '', $uri, 1));
         }
 
         return parent::frontControllerPath($sitePath, $siteName, $uri);

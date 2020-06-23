@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2018-present, Joshua Lückers (https://github.com/JoshuaLuckers)
+ * Copyright (c) 2018, Joshua Lückers (https://github.com/JoshuaLuckers)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE file
@@ -11,6 +11,14 @@
 
 class MODXRevolutionValetDriver extends BasicValetDriver
 {
+    /**
+     * @var string
+     */
+    public $basePath = '/';
+    /**
+     * @var string
+     */
+    public $requestParameter = 'q';
 
     /**
      * Determine if the driver serves the request.
@@ -22,19 +30,17 @@ class MODXRevolutionValetDriver extends BasicValetDriver
      */
     public function serves($sitePath, $siteName, $uri)
     {
-        if (file_exists($sitePath . '/config.core.php')) {
+        $path = dirname($uri);
+        if ($path !== '/') {
+            $path .= '/';
+        }
+
+        if ($this->isMODXRequest($sitePath, $path)) {
+            $this->basePath = $path;
             return true;
         }
 
-        if (!file_exists($sitePath . '/index.php')) {
-            return false;
-        }
-
-        if (strpos(file_get_contents($sitePath . '/index.php'), 'MODX Revolution') !== false) {
-            return true;
-        }
-
-        return false;
+        return $this->isMODXRequest($sitePath, '/');
     }
 
     /**
@@ -77,7 +83,9 @@ class MODXRevolutionValetDriver extends BasicValetDriver
     public function frontControllerPath($sitePath, $siteName, $uri)
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET' || $_SERVER['REQUEST_METHOD'] === 'POST') {
-            $requestParameter = ltrim($uri, '/');
+            $requestParameter = preg_replace('/' .preg_quote($this->basePath, '/'). '/', '', $uri, 1);
+            $requestParameter = ltrim($requestParameter, '/');
+
             if ($requestParameter !== '') {
                 $requestParameterParts = explode('/', $requestParameter, 2);
 
@@ -97,16 +105,20 @@ class MODXRevolutionValetDriver extends BasicValetDriver
                     if(isset($cultureKey)) {
                         $_GET['cultureKey'] = $cultureKey;
                     }
-                    $_GET['q'] = $requestParameter;
+                    $_GET[$this->requestParameter] = $requestParameter;
                     $_REQUEST += $_GET;
                 } else {
                     if(isset($cultureKey)) {
                         $_POST['cultureKey'] = $cultureKey;
                     }
-                    $_POST['q'] = $requestParameter;
+                    $_POST[$this->requestParameter] = $requestParameter;
                     $_REQUEST += $_POST;
                 }
             }
+        }
+
+        if ($this->basePath !== '/') {
+            return parent::frontControllerPath($sitePath . rtrim($this->basePath, '/'), $siteName, $uri);
         }
 
         return parent::frontControllerPath($sitePath, $siteName, $uri);
@@ -153,5 +165,31 @@ class MODXRevolutionValetDriver extends BasicValetDriver
         ];
 
         return $cultureKeys;
+    }
+
+    /**
+     * @param $sitePath
+     * @param $path
+     * @return bool
+     */
+    public function isMODXRequest($sitePath, $path)
+    {
+        if (file_exists($sitePath . $path . 'config.core.php')) {
+            return true;
+        }
+
+        if (!file_exists($sitePath . $path . 'index.php')) {
+            return false;
+        }
+
+        $indexFileContents = file_get_contents($sitePath . $path . 'index.php');
+        if (strpos($indexFileContents, 'modX') !== false) {
+            if (strpos($indexFileContents, 'modRestService') !== false) {
+                $this->requestParameter = '_rest';
+            }
+            return true;
+        }
+
+        return false;
     }
 }

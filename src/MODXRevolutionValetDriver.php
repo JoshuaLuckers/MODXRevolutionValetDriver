@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2018, Joshua Lückers (https://github.com/JoshuaLuckers)
+ * Copyright (c) 2023, Joshua Lückers (https://github.com/JoshuaLuckers)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE file
@@ -8,6 +8,10 @@
  *
  * Redistributions of files must retain the above copyright notice.
  */
+
+namespace Valet\Drivers\Custom;
+
+use Valet\Drivers\BasicValetDriver;
 
 class MODXRevolutionValetDriver extends BasicValetDriver
 {

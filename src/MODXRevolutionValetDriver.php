@@ -44,8 +44,7 @@ class MODXRevolutionValetDriver extends BasicValetDriver
             return true;
         }
 
-        //return $this->isMODXRequest($sitePath, '/');
-        return false;
+        return $this->isMODXRequest($sitePath, '/');
     }
 
     /**
@@ -74,8 +73,7 @@ class MODXRevolutionValetDriver extends BasicValetDriver
             }
         }
 
-       // return $isStaticFile;
-       return false;
+       return $isStaticFile;
     }
 
     /**

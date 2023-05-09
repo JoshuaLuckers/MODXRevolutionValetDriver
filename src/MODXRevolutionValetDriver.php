@@ -32,7 +32,7 @@ class MODXRevolutionValetDriver extends BasicValetDriver
      * @param  string $uri
      * @return bool
      */
-    public function serves($sitePath, $siteName, $uri)
+    public function serves(string $sitePath, string $siteName, string $uri): bool
     {
         $path = dirname($uri);
         if ($path !== '/') {
@@ -53,7 +53,7 @@ class MODXRevolutionValetDriver extends BasicValetDriver
      * @param  string $sitePath
      * @param  string $siteName
      * @param  string $uri
-     * @return string|false
+     * @return bool
      */
     public function isStaticFile($sitePath, $siteName, $uri)
     {
@@ -73,7 +73,7 @@ class MODXRevolutionValetDriver extends BasicValetDriver
             }
         }
 
-        return $isStaticFile;
+       return $isStaticFile;
     }
 
     /**
@@ -84,7 +84,7 @@ class MODXRevolutionValetDriver extends BasicValetDriver
      * @param  string $uri
      * @return string
      */
-    public function frontControllerPath($sitePath, $siteName, $uri)
+    public function frontControllerPath(string $sitePath, string $siteName, string $uri): ?string
     {
         if ($_SERVER['REQUEST_METHOD'] === 'GET' || $_SERVER['REQUEST_METHOD'] === 'POST') {
             $requestParameter = preg_replace('/' .preg_quote($this->basePath, '/'). '/', '', $uri, 1);
